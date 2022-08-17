@@ -17,6 +17,18 @@ router.get("/:id", async (req,res) => {
         res.json({statusCode: 404, msg: 'User not found!', data: {}}) 
 });
 
+router.post("/login", async (req,res) => {
+    const userInfo = await Users.findOne({
+        where: {
+            nickname: req.body.login,
+            password: req.body.pw
+        }
+    })
+    userInfo?   
+        res.json({statusCode: 200, msg: '', data : userInfo}) :
+        res.json({statusCode: 404, msg: 'User not found!', data: {}}) 
+});
+
 router.post("/", async (req, res) => {
     const user = req.body
     await Users.create(user)

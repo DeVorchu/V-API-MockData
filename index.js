@@ -3,13 +3,23 @@ const bodyParser = require("body-parser");
 const router = express.Router();
 const app = express();
 
+const db = require("./models")
+
 const users = require('./db/users')
 
 require('dotenv').config();
 
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+db.sequelize.sync().then(() =>{
+    app.listen(process.env.PORT, () => {
+        console.log(`Server running on port ${process.env.PORT}`);
+    });
+})
+
+
+
 
 router.post("/login",(req,res) => {
     const loginRes = users.find(x => x.nick === req.body.nick )
@@ -21,11 +31,11 @@ router.post("/login",(req,res) => {
         res.status(404).send('User not found!')
     }
 });
+
+
     
 
 app.use("/", router);
 
 
-app.listen(process.env.PORT, () => {
- console.log(`Server running on port ${process.env.PORT}`);
-});
+

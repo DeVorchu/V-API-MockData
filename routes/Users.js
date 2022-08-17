@@ -4,18 +4,23 @@ const { Users } = require("../models")
 
 router.get("/", async (req,res) => {
     const listOfUsers = await Users.findAll()
-    res.json(listOfUsers)
+    listOfUsers.length > 0?    
+        res.json({statusCode: 200, msg: '', data : listOfUsers}) :
+        res.json({statusCode: 205, msg: 'No data', data : {}})
+    
 });
 
 router.get("/:id", async (req,res) => {
     const userInfo = await Users.findByPk(req.params.id)
-    res.json(userInfo)
+    userInfo?   
+        res.json({statusCode: 200, msg: '', data : userInfo}) :
+        res.json({statusCode: 404, msg: 'User not found!', data: {}}) 
 });
 
 router.post("/", async (req, res) => {
     const user = req.body
     await Users.create(user)
-    res.json(user)
+    res.json({statusCode: 201, msg: '', data : user})
 });
 
 router.delete("/:id", async (req, res) => {
@@ -29,7 +34,7 @@ router.delete("/:id", async (req, res) => {
           });
         res.json("DELETED SUCCESSFULLY");
     } else {
-        res.json("USER NOT FOUND!");
+        res.json({statusCode: 404, msg: 'User not found!', data: {}});
     }
     
 });
